@@ -29,14 +29,11 @@ passport.deserializeUser((obj, done) => done(null, obj));
 passport.use(
   new SteamStrategy(
     {
-      returnURL: "https://TU-BACKEND.onrender.com/auth/steam/return",
-      realm: "https://gameflox-backend.onrender.com/",
+      returnURL: "https://gameflox-backend.onrender.com/auth/steam/return",
+      realm: "https://gameflox-backend.onrender.com",
       apiKey: process.env.STEAM_API_KEY,
     },
-    (identifier, profile, done) => {
-      profile.identifier = identifier;
-      return done(null, profile);
-    }
+
   )
 );
 
