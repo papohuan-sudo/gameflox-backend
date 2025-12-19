@@ -6,8 +6,8 @@ const SteamStrategy = require("passport-steam").Strategy;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 🔐 Render está detrás de proxy HTTPS
 app.set("trust proxy", 1);
-
 
 /* ─────────────────────
    SESIONES
@@ -24,6 +24,20 @@ app.use(
   })
 );
 
+// 🔴 ESTO ES CLAVE (ANTES FALTABA)
+app.use(passport.initialize());
+app.use(passport.session());
+
+/* ─────────────────────
+   PASSPORT SERIALIZATION
+───────────────────── */
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 
 /* ─────────────────────
    STEAM STRATEGY
@@ -38,13 +52,10 @@ passport.use(
     (identifier, profile, done) => {
       // SteamID limpio
       profile.id = identifier.match(/\d+$/)[0];
-
       return done(null, profile);
     }
   )
 );
-
-
 
 /* ─────────────────────
    RUTAS
@@ -96,3 +107,4 @@ app.get("/games", async (req, res) => {
 app.listen(PORT, () => {
   console.log("Gameflox backend running on port " + PORT);
 });
+
