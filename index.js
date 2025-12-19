@@ -70,12 +70,12 @@ app.get(
   "/auth/steam/return",
   passport.authenticate("steam", { failureRedirect: "/" }),
   (req, res) => {
-    res.send(`
-      <h1>Steam conectado correctamente 🎮</h1>
-      <p>SteamID: ${req.user.id}</p>
-    `);
+    res.redirect(
+      `gameflox://login-success?steamid=${req.user.id}`
+    );
   }
 );
+
 
 /* ─────────────────────
    JUEGOS DEL USUARIO
