@@ -6,6 +6,9 @@ const SteamStrategy = require("passport-steam").Strategy;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set("trust proxy", 1);
+
+
 /* ─────────────────────
    SESIONES
 ───────────────────── */
@@ -13,15 +16,14 @@ app.use(
   session({
     secret: "gameflox_secret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((obj, done) => done(null, obj));
 
 /* ─────────────────────
    STEAM STRATEGY
@@ -33,9 +35,12 @@ passport.use(
       realm: "https://gameflox-backend.onrender.com",
       apiKey: process.env.STEAM_API_KEY,
     },
-
+    (identifier, profile, done) => {
+      return done(null, profile);
+    }
   )
 );
+
 
 /* ─────────────────────
    RUTAS
