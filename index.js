@@ -36,10 +36,14 @@ passport.use(
       apiKey: process.env.STEAM_API_KEY,
     },
     (identifier, profile, done) => {
+      // SteamID limpio
+      profile.id = identifier.match(/\d+$/)[0];
+
       return done(null, profile);
     }
   )
 );
+
 
 
 /* ─────────────────────
